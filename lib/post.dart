@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 
 class Posts extends StatefulWidget {
-  const Posts({Key? key}) : super(key: key);
+  const Posts({Key? key, required this.userId}) : super(key: key);
 
+  final String userId;
 
   @override
   _PostsState createState() => _PostsState();
@@ -15,15 +16,28 @@ class _PostsState extends State<Posts> {
 
   TextEditingController postEditingController = TextEditingController();
 
+  late String id;
+
+  @override
+  void initState() {
+    super.initState();
+
+    id = widget.userId;
+  }
 
   void addPost()async{
 
      await FirebaseFirestore.instance.collection('posts').add({
       'text': postEditingController.text,
       'date': DateTime.now().toString,
+       'id' : id
+
     });
     postEditingController.clear();
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {

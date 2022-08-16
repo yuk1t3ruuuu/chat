@@ -46,7 +46,7 @@ class _Auth extends State<Auth> {
     return Scaffold(
       appBar: AppBar(
       ),
-      body: _isSignedIn?Posts():const SignUp(),
+      body: _isSignedIn?Posts(userId: userId,):const SignUp(),
     );
   }
 }
