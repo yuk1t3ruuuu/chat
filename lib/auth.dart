@@ -14,7 +14,7 @@ class _Auth extends State<Auth> {
   bool _isSignedIn = false;
   String userId = '';
 
-  //問３
+
   void checkSignInState(){
     FirebaseAuth.instance
         .authStateChanges()
@@ -24,7 +24,7 @@ class _Auth extends State<Auth> {
           _isSignedIn = false;
         });
       } else {
-        userId = user.uid;//ユーザーIdの取得
+        userId = user.uid;
         setState(() {
           _isSignedIn = true;
         });

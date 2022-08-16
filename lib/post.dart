@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+
+
 class Posts extends StatefulWidget {
   const Posts({Key? key}) : super(key: key);
+
 
   @override
   _PostsState createState() => _PostsState();
@@ -12,11 +15,12 @@ class _PostsState extends State<Posts> {
 
   TextEditingController postEditingController = TextEditingController();
 
+
   void addPost()async{
-    //問１
-    await FirebaseFirestore.instance.collection('posts').add({
+
+     await FirebaseFirestore.instance.collection('posts').add({
       'text': postEditingController.text,
-      'date': DateTime.now().toString()
+      'date': DateTime.now().toString,
     });
     postEditingController.clear();
   }
@@ -30,15 +34,15 @@ class _PostsState extends State<Posts> {
 
 
           StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance.collection('posts').orderBy('date').snapshots(),//日付順で並べたドキュメント
+              stream: FirebaseFirestore.instance.collection('posts').orderBy('date').snapshots(),
               builder: (context, snapshot){
                 if(snapshot.hasData){
-                  List<DocumentSnapshot> postsData = snapshot.data!.docs;//nullチェックをして読み込んだデータをリストに保存
+                  List<DocumentSnapshot> postsData = snapshot.data!.docs;
                   return Expanded(
                     child: ListView.builder(
                         itemCount: postsData.length,
                         itemBuilder: (context, index){
-                          Map<String, dynamic> postData = postsData[index].data() as Map<String, dynamic>;//データをMap<String, dynamic>型に変換
+                          Map<String, dynamic> postData = postsData[index].data() as Map<String, dynamic>;
                           return postCard(postData);
                         }
                     ),

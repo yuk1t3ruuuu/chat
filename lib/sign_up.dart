@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:f_test/post.dart';
 
 
 class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
+  const SignUp({Key? key }) : super(key: key);
   @override
   SignUpState createState() => SignUpState();
 }
@@ -51,10 +52,15 @@ class SignUpState extends State<SignUp> {
 
   void handleSignIn()async{
     try{
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential userCredential =  await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailEditingController.text,
           password: passwordEditingController.text
       );
+      User user = userCredential.user!;
+      FirebaseFirestore.instance.collection('posts').doc(user.uid).set({
+        'id':user.uid,
+        'email': user.email
+      });
     }on FirebaseAuthException catch(e){
       if (e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -87,59 +93,75 @@ class SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width/2,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(child: Container(height:50, width: 50, child:TextField(
-              controller: emailEditingController,
-              decoration: const InputDecoration(labelText: 'メールアドレス', border: OutlineInputBorder()),
-            ),
-            )
-            ),
-            const SizedBox(height: 20,),
-            Expanded(child: Container(height:50, width: 50,child:TextField(
-              obscureText: true,
-              controller: passwordEditingController,
-              decoration: const InputDecoration(labelText: 'パスワード', border: OutlineInputBorder()),
-            ),
-            )
-            ),
-            const SizedBox(height: 20,),
-            alreadySignedUp?ElevatedButton(
-              onPressed: (){
-                handleSignIn();
-                move_PostPage();
+    return Scaffold(
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child:
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
 
-              },
-              child: const Text('サインイン', style: TextStyle(color: Colors.white),),
-              style: ButtonStyle(
-                  padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)))
-              ),
-            ):ElevatedButton(
-              onPressed: (){
-                handleSignUp();
-                move_PostPage();
-              },
-              child: const Text('ユーザー登録', style: TextStyle(color: Colors.white),),
-              style: ButtonStyle(
-                  padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)))
-              ),
-            ),
-            const SizedBox(height: 20,),
-            TextButton(onPressed: (){
-              setState(() {
-                alreadySignedUp = !alreadySignedUp;
-              });
-            },
-                child: Text(
-                  alreadySignedUp?'新しくアカウントを作成':'既にアカウントをお持ちですか？',
-                  style: const TextStyle(color: Colors.grey, decoration: TextDecoration.underline,),
+              Expanded(
+                child:
+                Container(
+                  alignment: Alignment.center,
+                  width: 500,
+                  padding: EdgeInsets.only(top: 100),
+                  child:
+                  TextField(
+                    controller: emailEditingController,
+                    decoration: const InputDecoration(labelText: 'メールアドレス', border: OutlineInputBorder()),
+                  ),
                 )
+              ),
+             Expanded(
+                child:
+                Container(
+                  padding: EdgeInsets.only(top: 30),
+                  width: 500,
+                  child:
+                    TextField(
+                      obscureText: true,
+                      controller: passwordEditingController,
+                      decoration: const InputDecoration(labelText: 'パスワード', border: OutlineInputBorder()),
+                    ),
+                )
+             ),
+            alreadySignedUp?ElevatedButton(
+                      onPressed: () {
+                        handleSignIn();
+                        move_PostPage();
+                      },
+                      child: const Text('サインイン', style: TextStyle(color: Colors.white),),
+                      style: ButtonStyle(
+                      padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)))),
+                      )
+                : ElevatedButton(
+                      onPressed: () {
+                      handleSignUp();
+                      move_PostPage();
+                      },
+                      child: const Text('ユーザー登録', style: TextStyle(color: Colors.white),),
+                      style: ButtonStyle(
+                        padding: MaterialStateProperty.all(const EdgeInsets.all(20)),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)))),
+                      ),
+            const SizedBox(
+                    height: 200,
+                  ),
+            Container(
+              padding: EdgeInsets.only(bottom: 100),
+              child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      alreadySignedUp = !alreadySignedUp;
+                    });
+                  },
+                  child: Text(alreadySignedUp ? '新しくアカウントを作成' : '既にアカウントをお持ちですか？',
+                    style: const TextStyle(color: Colors.grey, decoration: TextDecoration.underline,),
+                  )
+              ),
             )
           ],
         ),
