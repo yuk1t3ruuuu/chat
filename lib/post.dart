@@ -31,8 +31,6 @@ class _PostsState extends State<Posts> {
       appBar: AppBar(),
       body: Column(
         children: [
-
-
           StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance.collection('posts').orderBy('date').snapshots(),
               builder: (context, snapshot){

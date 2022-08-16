@@ -1,5 +1,5 @@
+import 'package:f_test/post.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:f_test/home.dart';
 import 'package:f_test/sign_up.dart';
 import 'package:flutter/material.dart';
 
@@ -46,7 +46,7 @@ class _Auth extends State<Auth> {
     return Scaffold(
       appBar: AppBar(
       ),
-      body: _isSignedIn?Home(userId: userId):const SignUp(),
+      body: _isSignedIn?Posts():const SignUp(),
     );
   }
 }

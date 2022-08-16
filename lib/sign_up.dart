@@ -52,15 +52,10 @@ class SignUpState extends State<SignUp> {
 
   void handleSignIn()async{
     try{
-      UserCredential userCredential =  await FirebaseAuth.instance.signInWithEmailAndPassword(
+       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailEditingController.text,
           password: passwordEditingController.text
       );
-      User user = userCredential.user!;
-      FirebaseFirestore.instance.collection('posts').doc(user.uid).set({
-        'id':user.uid,
-        'email': user.email
-      });
     }on FirebaseAuthException catch(e){
       if (e.code == 'user-not-found') {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -85,12 +80,7 @@ class SignUpState extends State<SignUp> {
       }
     }
   }
-
-  void move_PostPage(){
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {return Posts();}));
-  }
-
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,7 +120,6 @@ class SignUpState extends State<SignUp> {
             alreadySignedUp?ElevatedButton(
                       onPressed: () {
                         handleSignIn();
-                        move_PostPage();
                       },
                       child: const Text('サインイン', style: TextStyle(color: Colors.white),),
                       style: ButtonStyle(
@@ -140,7 +129,6 @@ class SignUpState extends State<SignUp> {
                 : ElevatedButton(
                       onPressed: () {
                       handleSignUp();
-                      move_PostPage();
                       },
                       child: const Text('ユーザー登録', style: TextStyle(color: Colors.white),),
                       style: ButtonStyle(
