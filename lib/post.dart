@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 
-
 class Posts extends StatefulWidget {
   const Posts({Key? key, required this.userId}) : super(key: key);
 
@@ -16,6 +15,8 @@ class _PostsState extends State<Posts> {
 
   TextEditingController postEditingController = TextEditingController();
 
+
+
   late String id;
 
   @override
@@ -27,10 +28,10 @@ class _PostsState extends State<Posts> {
 
   void addPost()async{
 
-     await FirebaseFirestore.instance.collection('posts').add({
+    await FirebaseFirestore.instance.collection('posts').add({
       'text': postEditingController.text,
-      'date': DateTime.now().toString,
-       'id' : id
+      'id' : id,
+     'date': DateTime.now().toString()
 
     });
     postEditingController.clear();
@@ -96,6 +97,7 @@ class _PostsState extends State<Posts> {
     return Card(
       child: ListTile(
         title: Text(postData['text']),
+        tileColor: id == postData['id']? Colors.green:Colors.white,
       ),
     );
   }
